@@ -10,15 +10,14 @@ class App extends Component {
       quotes: [],
       selectedQuoteIndex: null,
     } 
-    this.selectedQuoteIndex = this.selectQuoteIndex.bind(this);
+    this.assignNewQuoteIndex = this.assignNewQuoteIndex.bind(this);
+    this.selectedQuoteIndex = this.selectQuoteIndex.bind(this); 
   }
 
   componentDidMount() {
     fetch('https://gist.githubusercontent.com/natebass/b0a548425a73bdf8ea5c618149fe1fce/raw/f4231cd5961f026264bb6bb3a6c41671b044f1f4/quotes.json')
     .then(data => data.json())
-    .then(quotes => this.setState({ quotes }, () => {
-      this.setState({ selectedQuoteIndex: this.selectedQuoteIndex() })
-    }));
+    .then(quotes => this.setState({ quotes }, this.assignNewQuoteIndex));
   }
 
 //array of quotes and an index of where our selected quotes lives. 
@@ -40,12 +39,16 @@ class App extends Component {
     return random(0, this.state.quotes.length - 1);
   }
 
+  assignNewQuoteIndex() {
+    this.setState({ selectedQuoteIndex: this.selectedQuoteIndex() });
+  }
+
   render() {
     console.log(this.state.quotes);
     return (
       <div className="App" id="quote-box">
         { this.selectedQuote ? `"${this.selectedQuote.quote}" - ${this.selectedQuote.author}` : ``}
-        <Button buttonDisplayName="Next Quote" clickHandler={this.nextQuoteClickHandler} />
+        <Button buttonDisplayName="Next Quote" clickHandler={this.assignNewQuoteIndex} />
       </div>
     )
   }
